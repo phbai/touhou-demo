@@ -1,0 +1,227 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>酷狗音乐播放器的关闭特效，采用JavaScript实现</title>
+<style type="text/css">
+* {
+	padding:0px;
+	margin:0px;
+}
+#outer {
+	width:952px;
+	height: 640px;
+	position:absolute;
+	left:100px;
+	top:20px; }
+#div1 {
+	width:952px;
+	height: 640px;
+	overflow:hidden; 
+	position:absolute;font-size:0px;
+	
+}
+#div1 a {
+	position:absolute;
+	width:23px;
+	height:21px;
+	right:5px;
+	top:5px;
+	display:block; z-index:100; background:url(/jscss/demoimg/201211/kugou.jpg) no-repeat 957px 645px;}
+#div1 a:hover {
+	background:url(/jscss/demoimg/201211/hover.jpg) no-repeat right top;
+}
+#line {
+	height:3px;
+	width:952px;
+	display:none;
+	z-index:100;
+	position:absolute;
+	left:0px;
+	top:0px; font-size:0px;
+}
+#light{ /*width:50px; height:10px;*/  position:absolute; left:50%; top:50%;/* margin-left:-25px; margin-top:-5px;*/  width:0px; height:0px; filter:alpha(opacity:0);opacity:0;); overflow:hidden;}
+</style>
+<script type="text/javascript">
+function css(obj, attr, value)
+{
+	if(arguments.length==2)
+	{
+		if(attr!='opacity')
+		{
+			return parseInt(obj.currentStyle?obj.currentStyle[attr]:document.defaultView.getComputedStyle(obj, false)[attr]);
+		}
+		else
+		{
+			return Math.round(100*parseFloat(obj.currentStyle?obj.currentStyle[attr]:document.defaultView.getComputedStyle(obj, false)[attr]));
+		}
+	}
+	else if(arguments.length==3)
+		switch(attr)
+		{
+			case 'width':
+			case 'height':
+			case 'paddingLeft':
+			case 'paddingTop':
+			case 'paddingRight':
+			case 'paddingBottom':
+			value=Math.max(value,0);
+			case 'left':
+			case 'top':
+			case 'marginLeft':
+			case 'marginTop':
+			case 'marginRight':
+			case 'marginBottom':
+				obj.style[attr]=value+'px';
+				break;
+			case 'opacity':
+				obj.style.filter="alpha(opacity:"+value+")";
+				obj.style.opacity=value/100;
+				break;
+			default:
+				obj.style[attr]=value;
+		}
+	
+	return function (attr_in, value_in){css(obj, attr_in, value_in)};
+}
+
+var MIAOV_MOVE_TYPE={
+	BUFFER: 1,
+	FLEX: 2
+};//json
+
+function miaovStopMove(obj)
+{
+	clearInterval(obj.timer);
+}
+
+function miaovStartMove(obj, oTarget,iSpeedCtrol, iType, fnCallBack, fnDuring)
+{
+	var fnMove=null;
+	if(obj.timer)
+	{
+		clearInterval(obj.timer);
+	}
+	
+	switch(iType)
+	{
+		case MIAOV_MOVE_TYPE.BUFFER:
+			fnMove=miaovDoMoveBuffer;
+			break;
+		case MIAOV_MOVE_TYPE.FLEX:
+			fnMove=miaovDoMoveFlex;
+			break;
+	}
+	
+	obj.timer=setInterval(function (){
+		fnMove(obj, oTarget,iSpeedCtrol, fnCallBack, fnDuring);
+	}, 30);
+}
+
+function miaovDoMoveBuffer(obj, oTarget,iSpeedCtrol, fnCallBack, fnDuring)
+{
+	var bStop=true;
+	var attr='';
+	var speed=0;
+	var cur=0;
+	
+	for(attr in oTarget)
+	{
+		cur=css(obj, attr);
+		if(oTarget[attr]!=cur)
+		{
+			bStop=false;
+			
+			speed=(oTarget[attr]-cur)/iSpeedCtrol;
+			speed=speed>0?Math.ceil(speed):Math.floor(speed);
+			
+			css(obj, attr, cur+speed);
+		}
+	}
+	
+	if(fnDuring)fnDuring.call(obj);
+	
+	if(bStop)
+	{
+		clearInterval(obj.timer);
+		obj.timer=null;
+		
+		if(fnCallBack)fnCallBack.call(obj);
+	}
+}
+
+function miaovDoMoveFlex(obj, oTarget,iSpeedCtrol, fnCallBack, fnDuring)
+{
+	var bStop=true;
+	var attr='';
+	var speed=0;
+	var cur=0;
+	
+	for(attr in oTarget)
+	{
+		if(!obj.oSpeed)obj.oSpeed={};
+		if(!obj.oSpeed[attr])obj.oSpeed[attr]=0;
+		cur=css(obj, attr);
+		if(Math.abs(oTarget[attr]-cur)>=1 || Math.abs(obj.oSpeed[attr])>=1)
+		{
+			bStop=false;
+			
+			obj.oSpeed[attr]+=(oTarget[attr]-cur)/iSpeedCtrol;
+			obj.oSpeed[attr]*=0.7;
+			
+			css(obj, attr, cur+obj.oSpeed[attr]);
+		}
+	}
+	if(fnDuring)fnDuring.call(obj);
+	
+	if(bStop)
+	{
+		clearInterval(obj.timer);
+		obj.timer=null;
+		
+		if(fnCallBack)fnCallBack.call(obj);
+	}
+}
+</script>
+<script type="text/javascript">
+window.onload=function(){
+  var oDiv1 = document.getElementById('div1');
+  var oAbtn = oDiv1.getElementsByTagName('a')[0];
+  var oImg1 = document.getElementById('img1');
+  var oImg2 = document.getElementById('img2');
+  var oImg3 = document.getElementById('img3');
+  var oLine = document.getElementById('line');
+  var oLight = document.getElementById('light');
+  oAbtn.onclick=function(){
+	  miaovStartMove(oDiv1, {height:3,marginTop:315},1.5, MIAOV_MOVE_TYPE.BUFFER,function(){
+		  oImg1.style.display='none';
+		  oLine.style.display='block';
+		  
+		  miaovStartMove(oDiv1, {width:0,marginLeft:476},2, MIAOV_MOVE_TYPE.BUFFER);
+		  miaovStartMove(oLine, {width:0},2, MIAOV_MOVE_TYPE.BUFFER);
+		  miaovStartMove(oImg2, {width:0},2, MIAOV_MOVE_TYPE.BUFFER,function(){
+			   miaovStartMove(oImg3, {width:200,height:10},1, MIAOV_MOVE_TYPE.BUFFER);
+			  miaovStartMove(oLight, {width:200,height:10,marginLeft:-100,marginTop:-5,opacity:100},1, MIAOV_MOVE_TYPE.BUFFER,function(){
+				  miaovStartMove(oLight, {opacity:0},1, MIAOV_MOVE_TYPE.BUFFER);
+				 
+				  });
+			 });
+		  });
+	 }
+}
+</script>
+</head>
+
+<body>
+<div id="outer">
+  <div id="light"><img id="img3" src="/jscss/demoimg/201211/line1.png"  style="width:0px; height:0px;"/></div>
+  <div id="div1">
+     <img id="img1" src="/jscss/demoimg/201211/kugou.jpg" style="height:640px; width:952px; z-index:-3;"/>
+     <a href="#"></a>
+    <div id="line"> 
+     <img id="img2" src="/jscss/demoimg/201211/line.png" style=" width:952px; height:3px;" />
+     </div>
+  </div>
+</div>
+</body>
+</html>

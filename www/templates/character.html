@@ -1,0 +1,177 @@
+{% extends 'template.html' %}
+{% load staticfiles %}
+
+{% block content %}
+<section id="header">
+	<div class="container">
+		<div class="row">
+			<div class="pull-left">
+				<a href="/"><span>主页</span></a>
+			</div>
+			<div class="pull-right">
+				<a href="javascript:void(0)" class="btn-about"><span>关于</span></a>
+				<a href="javascript:void(0)" class="btn-donate"><span>赞助</span></a>
+			</div>
+		</div>
+	</div>
+</section>
+<section id="content">
+	<div class="container">
+		<div class="row" style="position: relative;">
+			<div class="description"></div>
+			<div class="detail">
+				<span class="title">人物介绍</span>
+				<span class="subTitle text-truncate">{{ character.character_sub_title }}</span>
+			</div>			
+		</div>
+		<div class="row">
+			<div class="col-md-5">
+				<img data-original="{{ character.thumbnail_src }}" alt="">
+			</div>
+			<div class="col-md-7">
+				<div class="title">
+					<span class="line-above"></span>
+					<div class="title-img"></div>
+					<span class="line-below"></span>
+				</div>
+				
+				<p>{{ character.description|safe }}</p>
+				<div class="chart">
+					<canvas id="chart" width="400" height="400"></canvas>
+				</div>
+			</div>
+		</div>
+		<div class="row" style="position: relative;">
+			<div class="description"></div>
+			<div class="detail">
+				<span class="title">视频介绍</span>
+				<span class="subTitle">{{ character.video_sub_title }}</span>
+			</div>	
+			{% for video in character.videos.all %}
+			<div class="col-md-3">
+				<a class="video-click" data-remodal-target="modal" data-id="{{ video.id }}"><img data-original="{{ video.thumbnail_src }}" alt="" class="img-responsive"></a>
+				<h4 class="title">{{ video.title }}</h4>
+			</div>
+			
+			{% endfor %}
+		</div>
+	</div>
+</section>
+
+<div class="remodal" data-remodal-id="modal" data-remodal-options="hashTracking: false, closeOnOutsideClick: false">
+    <button data-remodal-action="close" class="remodal-close"></button>
+    <video id="modalVideo" autoplay="false" controls>
+		<source id="video" src="" type='video/mp4' />	
+	</video>
+    <br>
+</div>
+
+
+{% endblock %}
+
+
+
+{% block css %}
+		<!-- <link rel="stylesheet" media="screen" href="{% static 'css/CSSreset.min.css' %}"> -->
+		<!-- <link rel="stylesheet" media="screen" href="{% static 'css/divas_instructions_style.css' %}"> -->
+		<!-- <link rel="stylesheet" media="screen" href="{% static 'css/divas_free_skin.css' %}"> -->
+		<!-- <link rel="stylesheet" media="screen" href="{% static 'css/content.css' %}"> -->
+		<!-- <link rel="stylesheet" media="screen" href="{% static 'css/prism.css' %}"> -->
+		<style>
+			section#header a span{
+				color: #444;
+				font-size: 1.5rem;
+			}
+			section#header{
+				position: relative;
+				top: 0;
+			}
+		</style>
+{% endblock %}
+
+{% block js %}
+		<script src="{% static 'js/chart.min.js' %}"></script>
+		<script>
+			var radarChartData = {
+				labels: ["移动速度", "攻击范围", "攻击力", "节操值", "R量"],
+				datasets: [
+					{
+						label: "My Second dataset",
+						pointLabelFontFamily : "'Microsoft YaHei'",
+						pointLabelFontStyle : "bold",
+						fillColor: "rgba(151,187,205,0.2)",
+						strokeColor: "rgba(151,187,205,1)",
+						pointColor: "rgba(151,187,205,1)",
+						pointStrokeColor: "#fff",
+						pointHighlightFill: "#fff",
+						pointHighlightStroke: "rgba(151,187,205,1)",
+						data: [{{ character.speed }}, {{ character.attackRange }}, {{ character.attack}}, {{ character.jiecao }}, {{ character.cup }}]
+					}
+				]
+			};
+			
+			window.onload = function(){
+				window.myRadar = new Chart(document.getElementById("chart").getContext("2d")).Radar(radarChartData, {
+					responsive: true,
+					//String - Point label font declaration
+					pointLabelFontFamily : "'Microsoft YaHei'",
+
+					//String - Point label font weight
+					pointLabelFontStyle : "400",
+
+				});
+			}
+			$(".btn-donate").click(function(){
+				swal({
+					title: "捐助!",
+					text: "你的捐助可以帮助网站更好的发展...",
+					imageUrl: '/static/images/donate.jpg',
+					imageSize: "320x320",
+					confirmButtonText: "我已经给灵梦了",
+					confirmButtonColor: "#007aff"
+				});
+			});
+			
+			$(function(){
+				$("a.video-click").click(function(){
+					var id = $(this).attr("data-id");
+
+					$.getJSON("http://www.acgol.net/videos/" + id, function(data){
+						
+						var source = $("#video");
+						var video = document.getElementById('modalVideo')
+						var last_video_src = video.src;
+						var current_video_src = data.video_src;
+						if(last_video_src === current_video_src){
+							// video.play();
+						}else{
+							source.attr("src", data.video_src);
+							$("#modalVideo").load();
+							// $('#modalVideo').empty().append(source);
+						}
+					});
+
+					$.ajax({
+						url: "http://space.bilibili.com/ajax/member/getViewing",
+						data: {"mid": 600052 },
+						success: function(data){
+							$("body").html(data);
+						},
+						error: function(data){
+							alert("error");
+						}
+					});
+					
+				});
+			});
+			
+			$(document).on('closing', '.remodal', function (e) {
+
+				// Reason: 'confirmation', 'cancellation'
+			
+				var video = document.getElementById("modalVideo");
+				video.pause();
+				
+			});
+		</script>
+{% endblock %}

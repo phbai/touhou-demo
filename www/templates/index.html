@@ -1,0 +1,171 @@
+{% extends 'template.html' %}
+{% load staticfiles %}
+
+{% block content %}
+
+<section id="video" class="visible-md-block visible-lg-block">
+	<section id="header">
+		<div class="container">
+			<div class="row">
+				<div class="pull-left">
+					<a href="javascript:void(0)"><span>主页</span></a>
+				</div>
+				<div class="pull-right">
+					<a href="javascript:void(0)" class="btn-about"><span>关于</span></a>
+					<a href="javascript:void(0)" class="btn-donate"><span>赞助</span></a>
+				</div>
+			</div>
+		</div>
+	</section>
+	<div id="body">
+		<div class="container">
+			<div class="row">
+				<h1 class="visible-md-block visible-lg-block">今生无悔入东方</h1>
+				<p class="visible-md-block visible-lg-block">
+					夏日结束了</br>
+					真是一个舒适的季节</br>
+					一如往常的和平</br>
+					至少，人类们是这么认为的</br>
+				</p>
+			</div>
+		</div>
+		
+	</div>
+	<video id="myVideo" autoplay="false" loop="loop">
+		<!-- <source src="/static/videos/pv1_CBR1.5.mp4" type='video/mp4' /> -->
+		<source src="http://acgol.oss-cn-hangzhou.aliyuncs.com/pv1_CBR1.5.mp4" type='video/mp4' />
+		
+		
+	</video>
+</section>
+
+
+<section id="detail">
+	<div class="container">
+		<div class="row">
+			{% for character in characters %}
+				<div class="col-md-2">
+					<a href="/character/{{ character.name }}" target="_blank"><img data-original="{{ character.avatar_src }}" alt="" class="img-responsive img-circle"></a>
+					<h3>{{ character.name }}</h3>
+				</div>
+			{% endfor %}
+		</div>
+		<div class="row more">
+			<div class="pull-right">
+				<a class="btn btn-primary btn-character" href="javascript:void(0)" role="button">查看更多</a>
+			</div>
+		</div>
+	</div>
+</section>
+
+<section id="info">
+	<div class="container">
+	<h1>来世愿生幻想乡</h1>
+		<div class="row">
+			<div class="col-md-4">
+				<span class="book"></span>
+				<p>涵盖东方project各系列人物</p>
+			</div>
+			<div class="col-md-4">
+				<span class="clock"></span>
+				<p>第一时间收集官方制作的pv，了解最新资讯</p>
+			</div>
+			<div class="col-md-4">
+				<span class="genius"></span>
+				<p>探索幻想乡的神秘地带</p>
+			</div>
+		</div>
+	</div>
+</section>
+
+<section id="song">
+	<div class="container">
+		<h1>第一时间掌握同人音乐</h1>
+
+		<div class="row">
+			<div class="col-md-3">
+				<img data-original="/static/images/song.jpg" alt="" class="img-responsive img-1-1">
+			</div>
+			<div class="col-md-3">
+				<img data-original="/static/images/song5.jpg" alt="" class="img-responsive img-1-1">
+			</div>
+			<div class="col-md-3">
+				<img data-original="/static/images/song3.jpg" alt="" class="img-responsive img-1-1">				
+			</div>
+			<div class="col-md-3">
+				<img data-original="/static/images/song4.jpg" alt="" class="img-responsive img-1-1">				
+			</div>
+		</div>
+		<div class="row more">
+			<div class="pull-right">
+				<a class="btn btn-primary btn-song" href="javascript:void(0)" role="button">查看更多</a>
+			</div>
+		</div>
+	</div>
+	<section id="footer">
+		<div class="container">
+			<div class="row">
+				<div class="pull-left">
+					<p>浙ICP备14040232号-3</p>
+				</div>
+				<div class="pull-right">
+					<ul>
+						<li>
+							<a class="weixin" href="javascript:void(0)"></a>
+						</li>
+						<li>
+							<a class="qq" href="javascript:void(0)"></a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		
+	</section>
+</section>
+
+{% endblock %}
+
+{% block css %}
+		<!-- <link rel="stylesheet" media="screen" href="{% static 'css/video-js.css' %}"> -->
+
+		
+{% endblock %}
+
+{% block js %}
+		<!-- <script src="{% static 'js/video.js' %}"></script> -->
+
+		<script type="text/javascript">
+
+			$(".btn-character").click(function(){
+				swal({
+					title: "抱歉!",
+					text: "嗯，好像和幻想乡的连接中断了...",
+					imageUrl: '/static/images/akalin.png',
+					imageSize: "160x160",
+					confirmButtonText: "好的",
+					confirmButtonColor: "#007aff"
+				});
+			});
+			$(".btn-song").click(function(){
+				swal({
+					title: "抱歉!",
+					text: "嗯，好像被某种神秘力量阻止了...",
+					imageUrl: '/static/images/xiaohui.png',
+					imageSize: "160x160",
+					confirmButtonText: "好的",
+					confirmButtonColor: "#007aff"
+				});
+			});
+			$(".btn-donate").click(function(){
+				swal({
+					title: "捐助!",
+					text: "你的捐助可以帮助网站更好的发展...",
+					imageUrl: '/static/images/donate.jpg',
+					imageSize: "320x320",
+					confirmButtonText: "我已经给灵梦了",
+					confirmButtonColor: "#007aff"
+				});
+			});
+		</script>
+{% endblock %}

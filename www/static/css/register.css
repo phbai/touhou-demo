@@ -1,0 +1,70 @@
+			.box{
+				position: absolute;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				top: 0;
+				width: 951px;
+				height: 429px;
+				margin: auto;
+			}
+
+			.viewport{
+				position: relative;
+				height: 100vh;
+  				min-height: 600px;
+  				background: url('/static/images/13.jpg');
+			}
+			
+			.viewport .bg{
+				position: absolute;
+				left: 0;
+				right: 0;
+				top: 0;
+				bottom: 0;
+				width: 640px;
+				height: 313px;
+				background: inherit;
+				overflow: hidden;
+				background-position: -367px -181px;
+				/*background-position: 0 0;*/
+				margin: auto;
+				clip: rect(1px, 639px, 312px, 1px);
+
+				filter: blur(10px) brightness(1.1) contrast(1.1);
+				-webkit-filter: blur(10px) brightness(.9) contrast(1.1);
+			}
+			.login{
+				position: absolute;
+				left: 0;
+				right: 0;
+				top: 0;
+				bottom: 0;
+				width: 640px;
+				height: 313px;
+				margin: auto;
+				padding: 15px 30px;
+				color: #fff !important;
+			}
+			.login legend{
+				margin-bottom: 10px!important;
+				color: #fff !important;
+				/*-webkit-border-image: url('images/line-2.png') 0 4 stretch stretch;
+				border-image: url('images/line-2.png') 0 4 stretch stretch;*/
+			}
+			.login .form-horizontal .form-group {
+				margin-left: 0!important;
+				margin-right: 0!important;
+			}
+
+			.nav{
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100vw;
+				height: 50px;
+				background: inherit;
+				background-position: 0 0; 
+				filter: blur(10px) brightness(1.1) contrast(1.1);
+				-webkit-filter: blur(10px) brightness(.9) contrast(1.1);
+			}
